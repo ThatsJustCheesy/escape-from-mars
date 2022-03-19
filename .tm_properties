@@ -1,0 +1,3 @@
+[ *.asm ]
+softTabs = false
+tabSize = 8
