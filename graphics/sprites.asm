@@ -1,13 +1,21 @@
 # Sprite drawing
 
+.include "framebuffer.asm"
+
 .data
 newline:	.asciiz "\n"
 
 .text
 
-## void draw_sprite(int x, int y, char* pixels)
+## typedef struct sprite {
+## 	int width, height;
+## 	char pixels[width][height];
+## } sprite;
+
+## void draw_sprite(int x, int y, sprite* pixels, bool erase)
 ## Draw the sprite data pointed to by `pixels`,
 ## with the top-left corner anchored at (`x`, `y`).
+## If `erase` is set, erase the sprite instead of drawing it.
 draw_sprite:
 	addi $sp, $sp, -4
 	sw $ra, 0($sp)
@@ -133,7 +141,14 @@ draw_sprite_loop_over_x:
 	andi $v1, $v0, 0xFF000000
 	beqz $v1, draw_sprite_transparent_pixel
 	
-	# It's not; copy to framebuffer
+	# Pixel not transparent; check if we should draw or erase
+	beqz $a3, draw_sprite_copy_pixel
+	
+	# Erase by copying background color to framebuffer
+	li $v0, BACKGROUND_COLOR
+	
+draw_sprite_copy_pixel:
+	# Copy pixel to framebuffer
 	sw $v0, ($t1)
 
 draw_sprite_transparent_pixel:
