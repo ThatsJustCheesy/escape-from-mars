@@ -5,8 +5,6 @@
 # - Display height in pixels: 256
 # - Base Address for Display: 0x10010000 (static data)
 
-.include "colors.asm"
-
 .eqv	FB_BASE	0x10010000
 .eqv	FB_LEN	0x8000
 

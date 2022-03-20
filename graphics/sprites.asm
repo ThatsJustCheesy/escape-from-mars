@@ -1,7 +1,5 @@
 # Sprite drawing
 
-.include "framebuffer.asm"
-
 .data
 newline:	.asciiz "\n"
 

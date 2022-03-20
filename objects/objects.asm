@@ -4,6 +4,27 @@
 ## 	void (*update)(object* self);
 ## } object;
 
+.eqv SIZEOF_object 16
+
+.eqv object.x 0
+.eqv object.y 4
+.eqv object.sprite 8
+.eqv object.update 12
+
+.text
+
+## void init_object(object* obj, int x, int y, sprite* sprite, void (*update)(object* self))
+## Initialize object `obj`.
+init_object:
+	sw $a1, object.x($a0)
+	sw $a2, object.y($a0)
+	sw $a3, object.sprite($a0)
+	lw $t0, 0($sp)
+	addi $sp, $sp, 4
+	sw $t0, object.update($a0)
+	jr $ra
+
+
 ## void update_object(object*)
 ## Run updates for an object.
 update_object:
@@ -14,15 +35,15 @@ update_object:
 	move $t0, $a0
 	
 	# Erase sprite
-	lw $a0, 0($t0)
-	lw $a1, 4($t0)
-	lw $a2, 8($t0)
+	lw $a0, object.x($t0)
+	lw $a1, object.y($t0)
+	lw $a2, object.sprite($t0)
 	li $a3, 1		# 1 = erase
 	jal draw_sprite
 	
 	# Call update function if not null
 	lw $t0, 4($sp)
-	lw $t1, 12($t0)	# Load update function
+	lw $t1, object.update($t0)
 	beqz $t1, update_object_no_update_fn
 	move $a0, $t0		# Set self parameter
 	jalr $t1		# Call update function
@@ -32,9 +53,9 @@ update_object_no_update_fn:
 	lw $t0, 4($sp)
 	
 	# Draw sprite
-	lw $a0, 0($t0)
-	lw $a1, 4($t0)
-	lw $a2, 8($t0)
+	lw $a0, object.x($t0)
+	lw $a1, object.y($t0)
+	lw $a2, object.sprite($t0)
 	li $a3, 0		# 0 = draw
 	jal draw_sprite
 	
