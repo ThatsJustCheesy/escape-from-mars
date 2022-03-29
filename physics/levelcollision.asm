@@ -180,36 +180,61 @@
 check_bottom_collision:
 	addi $sp, $sp, -4
 	sw $ra, 0($sp)
-	
-	# t0 = x-midpoint
+
+	# t0 = x0
 	lw $t0, bounding_box.x0($a1)
-	lw $t1, bounding_box.x1($a1)
-	add $t0, $t0, $t1
-	sra $t0, $t0, 1
-	
+
 	# t1 = y1 + check_below
 	lw $t1, bounding_box.y1($a1)
 	add $t1, $t1, $a2
-	
-	addi $sp, $sp, -4
+
+	addi $sp, $sp, -12
 	sw $a0, 0($sp)
-	
+	sw $a1, 4($sp)
+	sw $a2, 8($sp)
+
 	move $a0, $t0
 	move $a1, $t1
 	jal xy2level_offset
-	
-	# t0 = layout
-	lw $t0, 0($sp)
-	addi $sp, $sp, 4
-	
+
+	lw $a2, 8($sp)
+	lw $a1, 4($sp)
+	lw $a0, 0($sp)
+	addi $sp, $sp, 12
+
 	# v0 = (current layout tile).collision
-	add $t1, $t0, $v0	# cursor into level_layout
+	add $t1, $a0, $v0	# cursor into level_layout
 	lw $t1, ($t1)		# level_layout_tile*
 	lw $v0, level_layout_tile.collision($t1)
 	
-	lw $ra, 0($sp)
+	bnez $v0, check_bottom_collision_end
+	
+	# t0 = x1
+	lw $t0, bounding_box.x1($a1)
+
+	# t1 = y1 + check_below
+	lw $t1, bounding_box.y1($a1)
+	add $t1, $t1, $a2
+
+	addi $sp, $sp, -4
+	sw $a0, 0($sp)
+
+	move $a0, $t0
+	move $a1, $t1
+	jal xy2level_offset
+
+	lw $a0, 0($sp)
 	addi $sp, $sp, 4
 	
+	# v0 = (current layout tile).collision
+	add $t1, $a0, $v0	# cursor into level_layout
+	lw $t1, ($t1)		# level_layout_tile*
+	lw $v0, level_layout_tile.collision($t1)
+	
+check_bottom_collision_end:
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+
 	jr $ra
 
 
@@ -221,11 +246,36 @@ check_top_collision:
 	addi $sp, $sp, -4
 	sw $ra, 0($sp)
 
-	# t0 = x-midpoint
+	# t0 = x0
 	lw $t0, bounding_box.x0($a1)
-	lw $t1, bounding_box.x1($a1)
-	add $t0, $t0, $t1
-	sra $t0, $t0, 1
+
+	# t1 = y0 - check_above
+	lw $t1, bounding_box.y0($a1)
+	sub $t1, $t1, $a2
+
+	addi $sp, $sp, -12
+	sw $a0, 0($sp)
+	sw $a1, 4($sp)
+	sw $a2, 8($sp)
+
+	move $a0, $t0
+	move $a1, $t1
+	jal xy2level_offset
+
+	lw $a2, 8($sp)
+	lw $a1, 4($sp)
+	lw $a0, 0($sp)
+	addi $sp, $sp, 12
+
+	# v0 = (current layout tile).collision
+	add $t1, $a0, $v0	# cursor into level_layout
+	lw $t1, ($t1)		# level_layout_tile*
+	lw $v0, level_layout_tile.collision($t1)
+	
+	bnez $v0, check_top_collision_end
+	
+	# t0 = x1
+	lw $t0, bounding_box.x1($a1)
 
 	# t1 = y0 - check_above
 	lw $t1, bounding_box.y0($a1)
@@ -238,15 +288,15 @@ check_top_collision:
 	move $a1, $t1
 	jal xy2level_offset
 
-	# t0 = layout
-	lw $t0, 0($sp)
+	lw $a0, 0($sp)
 	addi $sp, $sp, 4
-
+	
 	# v0 = (current layout tile).collision
-	add $t1, $t0, $v0	# cursor into level_layout
+	add $t1, $a0, $v0	# cursor into level_layout
 	lw $t1, ($t1)		# level_layout_tile*
 	lw $v0, level_layout_tile.collision($t1)
-
+	
+check_top_collision_end:
 	lw $ra, 0($sp)
 	addi $sp, $sp, 4
 
@@ -326,11 +376,36 @@ check_right_collision:
 	addi $sp, $sp, -4
 	sw $ra, 0($sp)
 
-	# t0 = y-midpoint
+	# t0 = y0
 	lw $t0, bounding_box.y0($a1)
-	lw $t1, bounding_box.y1($a1)
-	add $t0, $t0, $t1
-	sra $t0, $t0, 1
+
+	# t1 = x1 + check_to_right
+	lw $t1, bounding_box.x1($a1)
+	add $t1, $t1, $a2
+
+	addi $sp, $sp, -12
+	sw $a0, 0($sp)
+	sw $a1, 4($sp)
+	sw $a2, 8($sp)
+
+	move $a0, $t1
+	move $a1, $t0
+	jal xy2level_offset
+
+	lw $a2, 8($sp)
+	lw $a1, 4($sp)
+	lw $a0, 0($sp)
+	addi $sp, $sp, 12
+
+	# v0 = (current layout tile).collision
+	add $t1, $a0, $v0	# cursor into level_layout
+	lw $t1, ($t1)		# level_layout_tile*
+	lw $v0, level_layout_tile.collision($t1)
+	
+	bnez $v0, check_right_collision_end
+	
+	# t0 = y1
+	lw $t0, bounding_box.y1($a1)
 
 	# t1 = x1 + check_to_right
 	lw $t1, bounding_box.x1($a1)
@@ -343,15 +418,15 @@ check_right_collision:
 	move $a1, $t0
 	jal xy2level_offset
 
-	# t0 = layout
-	lw $t0, 0($sp)
+	lw $a0, 0($sp)
 	addi $sp, $sp, 4
-
+	
 	# v0 = (current layout tile).collision
-	add $t1, $t0, $v0	# cursor into level_layout
+	add $t1, $a0, $v0	# cursor into level_layout
 	lw $t1, ($t1)		# level_layout_tile*
 	lw $v0, level_layout_tile.collision($t1)
-
+	
+check_right_collision_end:
 	lw $ra, 0($sp)
 	addi $sp, $sp, 4
 
