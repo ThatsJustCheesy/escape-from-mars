@@ -56,6 +56,38 @@ update_object:
 	li $a3, 1		# 1 = erase
 	jal draw_sprite
 	
+	# Redraw surrounding level tiles
+	
+	lw $t0, 4($sp)
+	
+	la $a0, level_0
+	lw $a1, object.bounds.x0($t0)
+	lw $a2, object.bounds.y0($t0)
+	jal draw_level_tile
+	
+	lw $t0, 4($sp)
+	
+	la $a0, level_0
+	lw $a1, object.bounds.x1($t0)
+	lw $a2, object.bounds.y0($t0)
+	jal draw_level_tile
+	
+	lw $t0, 4($sp)
+	
+	la $a0, level_0
+	lw $a1, object.bounds.x0($t0)
+	lw $a2, object.bounds.y1($t0)
+	jal draw_level_tile
+	
+	lw $t0, 4($sp)
+	
+	la $a0, level_0
+	lw $a1, object.bounds.x1($t0)
+	lw $a2, object.bounds.y1($t0)
+	jal draw_level_tile
+	
+	lw $t0, 4($sp)
+	
 	# Call update function if not null
 	lw $t0, 4($sp)
 	lw $t1, object.update($t0)
