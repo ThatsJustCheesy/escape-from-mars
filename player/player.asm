@@ -3,17 +3,21 @@
 ## 	physics_state physics;
 ## } player;
 
-.eqv SIZEOF_player 32 # SIZEOF_object + SIZEOF_physics_state
+.eqv SIZEOF_player 40 # SIZEOF_object + SIZEOF_physics_state
 
 .eqv player.obj.x 0
+.eqv player.obj.bounds.x0 0
 .eqv player.obj.y 4
-.eqv player.obj.sprite 8
-.eqv player.obj.update 12
-.eqv player.physics 16
-.eqv player.physics.y_velocity 16
-.eqv player.physics.y_acceleration 20
-.eqv player.physics.tick_counter 24
-.eqv player.physics.on_ground 28
+.eqv player.obj.bounds.y0 4
+.eqv player.obj.bounds.x1 8
+.eqv player.obj.bounds.y1 12
+.eqv player.obj.sprite 16
+.eqv player.obj.update 20
+.eqv player.physics 24
+.eqv player.physics.y_velocity 24
+.eqv player.physics.y_acceleration 28
+.eqv player.physics.tick_counter 32
+.eqv player.physics.on_ground 36
 
 .eqv PLAYER_X_SPEED 5
 .eqv PLAYER_JUMP_Y_SPEED 6
@@ -129,6 +133,11 @@ update_player_fix_x_2:
 	
 update_player_store_x:
 	sw $t0, player.obj.x($t7)
+	
+	lw $t1, player.obj.sprite($t7)
+	lw $t1, sprite.width($t1)
+	add $t1, $t1, $t0
+	sw $t0, player.obj.bounds.x1($t7)
 	
 	lw $ra, 0($sp)
 	addi $sp, $sp, 4

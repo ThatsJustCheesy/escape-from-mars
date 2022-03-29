@@ -1,27 +1,42 @@
 ## typedef struct object {
-## 	int x, y;
+## 	bounding_box bounds;
 ## 	sprite* sprite;
 ## 	void (*update)(object* self);
 ## } object;
 
-.eqv SIZEOF_object 16
+.eqv SIZEOF_object 24	# SIZEOF_bounding_box + 8
 
+.eqv object.bounds 0
 .eqv object.x 0
+.eqv object.bounds.x0 0
 .eqv object.y 4
-.eqv object.sprite 8
-.eqv object.update 12
+.eqv object.bounds.y0 4
+.eqv object.bounds.x1 8
+.eqv object.bounds.y1 12
+.eqv object.sprite 16
+.eqv object.update 20
 
 .text
 
 ## void init_object(object* obj, int x, int y, sprite* sprite, void (*update)(object* self))
 ## Initialize object `obj`.
 init_object:
-	sw $a1, object.x($a0)
-	sw $a2, object.y($a0)
+	sw $a1, object.bounds.x0($a0)
+	sw $a2, object.bounds.y0($a0)
 	sw $a3, object.sprite($a0)
+	
 	lw $t0, 0($sp)
 	addi $sp, $sp, 4
 	sw $t0, object.update($a0)
+	
+	lw $t0, sprite.width($a3)
+	add $t0, $t0, $a1
+	sw $t0, object.bounds.x1($a0)
+	
+	lw $t0, sprite.height($a3)
+	add $t0, $t0, $a2
+	sw $t0, object.bounds.y1($a0)
+	
 	jr $ra
 
 

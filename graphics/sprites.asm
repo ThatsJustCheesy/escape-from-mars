@@ -1,14 +1,17 @@
 # Sprite drawing
 
-.data
-newline:	.asciiz "\n"
-
-.text
-
 ## typedef struct sprite {
 ## 	int width, height;
 ## 	char pixels[width][height];
 ## } sprite;
+
+.eqv sprite.width 0
+.eqv sprite.height 4
+
+.data
+newline:	.asciiz "\n"
+
+.text
 
 ## void draw_sprite(int x, int y, sprite* pixels, bool erase)
 ## Draw the sprite data pointed to by `pixels`,
@@ -47,9 +50,9 @@ draw_sprite_no_left_clip:
 
 draw_sprite_no_top_clip:
 	# t7 = width of sprite
-	lw $t7, 0($a2)
+	lw $t7, sprite.width($a2)
 	# t8 = height of sprite
-	lw $t8, 4($a2)
+	lw $t8, sprite.height($a2)
 	# t9 = one-past-the-end pointer into pixel data
 	mul $t9, $t7, $t8	# width of sprite * height of sprite
 	sll $t9, $t9, 2

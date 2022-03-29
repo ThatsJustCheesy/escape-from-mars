@@ -6,4 +6,5 @@
 .eqv GRAVITY_TICK_RATE 0
 
 .include "collision.asm"
+.include "levelcollision.asm"
 .include "gravity.asm"

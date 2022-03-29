@@ -1,17 +1,29 @@
-## typedef struct realplayer {
-## 	player p;
-## } realplayer;
+## typedef struct wall {
+## 	object obj;
+## } wall;
 
-.eqv SIZEOF_realplayer 16	# SIZEOF_player
+.eqv SIZEOF_wall 24 # SIZEOF_object
 
-.data
-realplayer_sprite:	.word	5, 6, 0x00000001, 0xff2ef053, 0xff2ff053, 0xff2ef053, 0x00000000, 0xff2ff053, 0xff2ef052, 0xfffffeff, 0xff2ff053, 0xff2ef052, 0x00000100, 0xff2ef053, 0xff2ef052, 0xff2ef053, 0x00010000, 0x00000000, 0x00000100, 0xff2ef053, 0x00000000, 0x00000100, 0x00010000, 0xff2ef052, 0xff2ef153, 0xff2ef053, 0x00000000, 0xff2ef153, 0xff2ff053, 0x00000000, 0xff2ef053, 0xff2ff053
+.eqv wall.obj.x 0
+.eqv wall.obj.y 4
+.eqv wall.obj.sprite 8
+.eqv wall.obj.update 12
+.eqv wall.bb 16
+.eqv wall.bb.x0 16
+.eqv wall.bb.y0 20
+.eqv wall.bb.x1 24
+.eqv wall.bb.y1 28
 
 .text
 
-## realplayer* new_realplayer(int x, int y)
-## Create a new realplayer.
-new_realplayer:
+.data
+wall_sprite:	.word	5, 6, 0x00000001, 0xff2ef053, 0xff2ff053, 0xff2ef053, 0x00000000, 0xff2ff053, 0xff2ef052, 0xfffffeff, 0xff2ff053, 0xff2ef052, 0x00000100, 0xff2ef053, 0xff2ef052, 0xff2ef053, 0x00010000, 0x00000000, 0x00000100, 0xff2ef053, 0x00000000, 0x00000100, 0x00010000, 0xff2ef052, 0xff2ef153, 0xff2ef053, 0x00000000, 0xff2ef153, 0xff2ff053, 0x00000000, 0xff2ef053, 0xff2ff053
+
+.text
+
+## wall* new_wall(int x, int y)
+## Create a new wall.
+new_wall:
 	move $t0, $a0
 	move $t1, $a1
 	
