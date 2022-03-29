@@ -23,7 +23,14 @@ main:
 	
 main_loop:
 	jal poll_keyboard
+
+	lb $t0, keyboard_p_down
+	beqz $t0, main_no_restart
 	
+	addi $sp, $sp, 4
+	j main
+
+main_no_restart:
 	lw $a0, 0($sp)
 	jal update_object
 	
