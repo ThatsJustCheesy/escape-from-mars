@@ -16,7 +16,7 @@ main:
 	jal draw_level
 	
 	li $a0, 15		# x
-	li $a1, 5		# y
+	li $a1, 30		# y
 	jal new_realplayer
 	addi $sp, $sp, -4
 	sw $v0, 0($sp)		# realplayer*

@@ -9,9 +9,23 @@ comma:	.asciiz	","
 ## int xy2level_offset(int x, int y)
 ## Convert (x,y)-based coordinates to a level_layout offset.
 xy2level_offset:
-	sra $a0, $a0, 1
-	sra $a1, $a1, 2
+	sra $a0, $a0, 3
+	sra $a1, $a1, 3
 	
+	bltz $a1, xy2level_offset_cap_at_top
+	bge $a1, LAYOUT_HEIGHT, xy2level_offset_cap_at_bottom
+	j xy2level_offset_after_cap
+	
+xy2level_offset_cap_at_top:
+	move $a1, $zero
+	j xy2level_offset_after_cap
+	
+xy2level_offset_cap_at_bottom:
+	li $a1, LAYOUT_HEIGHT
+	addi $a1, $a1, -1
+	j xy2level_offset_after_cap
+	
+xy2level_offset_after_cap:
 	## DEBUGGING
 	move $s7, $a0
 	li $v0, PRINT_INTEGER
@@ -77,9 +91,9 @@ draw_level_loop:
 	li $t8, LAYOUT_WIDTH
 	div $t1, $t8
 	mfhi $a0
-	sll $a0, $a0, 2	# log(TILE_WIDTH)
+	sll $a0, $a0, 3	# log(TILE_WIDTH)
 	mflo $a1
-	sll $a1, $a1, 2	# log(TILE_HEIGHT)
+	sll $a1, $a1, 3	# log(TILE_HEIGHT)
 	
 	# If y = max y, we are done
 	beq $a1, DISPLAY_HEIGHT, draw_level_end

@@ -12,6 +12,8 @@
 .eqv physics_state.tick_counter 8
 .eqv physics_state.on_ground 12
 
+.eqv TERMINAL_Y_VELOCITY 6
+
 .text
 
 ## void apply_gravity(object* obj, physics_state* physics)
@@ -113,12 +115,22 @@ apply_gravity_passed_tick_check:
 	addi $sp, $sp, 16
 	
 	# v0 = whether tile below has collision
-	bnez $v0, apply_gravity_no_gravity
+	bnez $v0, apply_gravity_cap_downward_velocity
 	
 	# Add y acceleration to y velocity
 	add $t2, $t2, $t3
 	
-apply_gravity_no_gravity:
+apply_gravity_cap_downward_velocity:
+	blt $t2, TERMINAL_Y_VELOCITY, apply_gravity_cap_upward_velocity
+	li $t2, TERMINAL_Y_VELOCITY
+	j apply_gravity_move_down
+	
+apply_gravity_cap_upward_velocity:
+	sub $t9, $zero, $t2
+	blt $t9, TERMINAL_Y_VELOCITY, apply_gravity_move_down
+	sub $t2, $zero, TERMINAL_Y_VELOCITY
+	
+apply_gravity_move_down:
 	# Add y velocity to y pos
 	add $t1, $t1, $t2
 
@@ -164,11 +176,51 @@ apply_gravity_on_ground_2:
 	li $t4, 1
 	
 apply_gravity_fix_y_1:
-	bge $t1, TOP_WALL_Y, apply_gravity_fix_y_2
-	li $t1, TOP_WALL_Y	# Top edge
-	addi $t1, $t1, -1
+	sw $t1, object.y($s0)
+	sw $t2, physics_state.y_velocity($s1)
+	sw $t3, physics_state.y_acceleration($s1)
+	sw $t4, physics_state.on_ground($s1)
+	
+	lw $t9, object.sprite($s0)
+	lw $t9, sprite.height($t9)
+	add $t1, $t1, $t9
+	sw $t1, object.bounds.y1($s0)
+	sub $t1, $t1, $t9
+	
+	addi $sp, $sp, -16
+	sw $t1, 0($sp)
+	sw $t2, 4($sp)
+	sw $t3, 8($sp)
+	sw $t4, 12($sp)
+	
+	la $a0, level_0
+	addi $a1, $s0, object.bounds
+	li $a2, 0
+	jal check_top_collision
+	
+	lw $t4, 12($sp)
+	lw $t3, 8($sp)
+	lw $t2, 4($sp)
+	lw $t1, 0($sp)
+	addi $sp, $sp, 16
+	
+	# v0 = whether tile above has collision
+	beqz $v0, apply_gravity_fix_y_2
+	
+	# Move down by one unit...
+	addi $t1, $t1, 1
+	sw $t1, object.y($s0)
+	
+	lw $t9, object.sprite($s0)
+	lw $t9, sprite.height($t9)
+	add $t1, $t1, $t9
+	sw $t1, object.bounds.y1($s0)
+	sub $t1, $t1, $t9
+	
 	li $t2, 2
-	j apply_gravity_return
+	
+	# ...repeatedly
+	j apply_gravity_fix_y_1
 
 apply_gravity_fix_y_2:
 	sw $t1, object.y($s0)
@@ -204,6 +256,7 @@ apply_gravity_fix_y_2:
 	
 	# Move up by one unit...
 	addi $t1, $t1, -1
+	sw $t1, object.y($s0)
 	
 	lw $t9, object.sprite($s0)
 	lw $t9, sprite.height($t9)

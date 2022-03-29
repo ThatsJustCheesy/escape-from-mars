@@ -5,6 +5,7 @@
 
 .eqv SIZEOF_player 40 # SIZEOF_object + SIZEOF_physics_state
 
+.eqv player.obj.bounds 0
 .eqv player.obj.x 0
 .eqv player.obj.bounds.x0 0
 .eqv player.obj.y 4
@@ -123,13 +124,97 @@ update_player_after_input_check:
 	# Add x velocity to x pos
 	add $t0, $t0, $t2
 	
+	addi $sp, $sp, -8
+	sw $t0, 0($sp)
+	sw $t7, 4($sp)
+	
+	move $a0, $t7
+	addi $a1, $t7, player.physics
+	jal apply_gravity
+	
+	lw $t7, 4($sp)
+	lw $t0, 0($sp)
+	addi $sp, $sp, 8
+	
 update_player_fix_x_1:
-	bge $t0, LEFT_WALL_X, update_player_fix_x_2
-	li $t0, LEFT_WALL_X	# Left edge
+	sw $t0, player.obj.x($t7)
+	
+	lw $t1, player.obj.sprite($t7)
+	lw $t1, sprite.width($t1)
+	add $t1, $t1, $t0
+	sw $t1, player.obj.bounds.x1($t7)
+	
+	addi $sp, $sp, -8
+	sw $t0, 0($sp)
+	sw $t7, 4($sp)
+	
+	la $a0, level_0
+	addi $a1, $t7, player.obj.bounds
+	li $a2, 0
+	jal check_left_collision
+	
+	lw $t7, 4($sp)
+	lw $t0, 0($sp)
+	addi $sp, $sp, 8
+	
+	# v0 = whether tile to left has collision
+	beqz $v0, update_player_fix_x_2
+	
+	# Move right by one unit...
+	addi $t0, $t0, 1
+
+	sw $t0, player.obj.x($t7)
+	
+	lw $t1, player.obj.sprite($t7)
+	lw $t1, sprite.width($t1)
+	add $t1, $t1, $t0
+	sw $t1, player.obj.bounds.x1($t7)
+	
+	li $t1, 2
+	sw $t1, player_x_velocity
+	
+	# ...repeatedly
+	j update_player_fix_x_1
 
 update_player_fix_x_2:
-	ble $t0, RIGHT_WALL_X, update_player_store_x
-	li $t0, RIGHT_WALL_X	# Right edge
+	sw $t0, player.obj.x($t7)
+	
+	lw $t1, player.obj.sprite($t7)
+	lw $t1, sprite.width($t1)
+	add $t1, $t1, $t0
+	sw $t1, player.obj.bounds.x1($t7)
+	
+	addi $sp, $sp, -8
+	sw $t0, 0($sp)
+	sw $t7, 4($sp)
+	
+	la $a0, level_0
+	addi $a1, $t7, player.obj.bounds
+	li $a2, 0
+	jal check_right_collision
+	
+	lw $t7, 4($sp)
+	lw $t0, 0($sp)
+	addi $sp, $sp, 8
+	
+	# v0 = whether tile to right has collision
+	beqz $v0, update_player_store_x
+	
+	# Move left by one unit...
+	addi $t0, $t0, -1
+
+	sw $t0, player.obj.x($t7)
+	
+	lw $t1, player.obj.sprite($t7)
+	lw $t1, sprite.width($t1)
+	add $t1, $t1, $t0
+	sw $t1, player.obj.bounds.x1($t7)
+	
+	li $t1, -2
+	sw $t1, player_x_velocity
+	
+	# ...repeatedly
+	j update_player_fix_x_1
 	
 update_player_store_x:
 	sw $t0, player.obj.x($t7)
@@ -137,11 +222,9 @@ update_player_store_x:
 	lw $t1, player.obj.sprite($t7)
 	lw $t1, sprite.width($t1)
 	add $t1, $t1, $t0
-	sw $t0, player.obj.bounds.x1($t7)
+	sw $t1, player.obj.bounds.x1($t7)
 	
 	lw $ra, 0($sp)
 	addi $sp, $sp, 4
 	
-	move $a0, $t7
-	addi $a1, $t7, player.physics
-	j apply_gravity	# Returns to current $ra
+	jr $ra
