@@ -146,7 +146,7 @@ draw_level_tile:
 	
 	# In bounds?
 	bltz $v0, draw_level_tile_end
-	bge $v0, 512, draw_level_tile_end	# 4 * LAYOUT_WIDTH * LAYOUT_HEIGHT
+	bge $v0, 1024, draw_level_tile_end	# 4 * LAYOUT_WIDTH * LAYOUT_HEIGHT
 	
 	move $t0, $a0
 	

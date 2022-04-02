@@ -5,11 +5,11 @@
 # - Display height in pixels: 256
 # - Base Address for Display: 0x10010000 (static data)
 
-.eqv	FB_BASE	0x10010000
-.eqv	FB_LEN	0x8000
+.eqv	FB_BASE	0x10008000
+.eqv	FB_LEN	0xf000
 
 .eqv	DISPLAY_WIDTH	128	# 512 / 4
-.eqv	DISPLAY_HEIGHT	64	# 256 / 4
+.eqv	DISPLAY_HEIGHT	128	# 256 / 4
 
 .data
 fb:	.space	0x8000

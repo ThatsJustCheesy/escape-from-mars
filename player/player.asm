@@ -20,7 +20,7 @@
 .eqv player.physics.tick_counter 32
 .eqv player.physics.on_ground 36
 
-.eqv PLAYER_X_SPEED 5
+.eqv PLAYER_X_SPEED 4
 .eqv PLAYER_JUMP_Y_SPEED 6
 .eqv PLAYER_Y_ACCELERATION_DUE_TO_GRAVITY 1
 
