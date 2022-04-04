@@ -60,28 +60,28 @@ update_object:
 	
 	lw $t0, 4($sp)
 	
-	la $a0, level_0
+	la $a0, level_1
 	lw $a1, object.bounds.x0($t0)
 	lw $a2, object.bounds.y0($t0)
 	jal draw_level_tile
 	
 	lw $t0, 4($sp)
 	
-	la $a0, level_0
+	la $a0, level_1
 	lw $a1, object.bounds.x1($t0)
 	lw $a2, object.bounds.y0($t0)
 	jal draw_level_tile
 	
 	lw $t0, 4($sp)
 	
-	la $a0, level_0
+	la $a0, level_1
 	lw $a1, object.bounds.x0($t0)
 	lw $a2, object.bounds.y1($t0)
 	jal draw_level_tile
 	
 	lw $t0, 4($sp)
 	
-	la $a0, level_0
+	la $a0, level_1
 	lw $a1, object.bounds.x1($t0)
 	lw $a2, object.bounds.y1($t0)
 	jal draw_level_tile

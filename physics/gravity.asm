@@ -12,7 +12,7 @@
 .eqv physics_state.tick_counter 8
 .eqv physics_state.on_ground 12
 
-.eqv TERMINAL_Y_VELOCITY 6
+.eqv t_collide_when_inactive_Y_VELOCITY 6
 
 .text
 
@@ -51,7 +51,7 @@ apply_gravity_check_on_ground_1:
 	sw $t3, 8($sp)
 	sw $t4, 12($sp)
 	
-	la $a0, level_0
+	la $a0, level_1
 	addi $a1, $s0, object.bounds
 	li $a2, 1
 	jal check_bottom_collision
@@ -103,7 +103,7 @@ apply_gravity_passed_tick_check:
 	sw $t3, 8($sp)
 	sw $t4, 12($sp)
 	
-	la $a0, level_0
+	la $a0, level_1
 	addi $a1, $s0, object.bounds
 	li $a2, 1
 	jal check_bottom_collision
@@ -121,14 +121,14 @@ apply_gravity_passed_tick_check:
 	add $t2, $t2, $t3
 	
 apply_gravity_cap_downward_velocity:
-	blt $t2, TERMINAL_Y_VELOCITY, apply_gravity_cap_upward_velocity
-	li $t2, TERMINAL_Y_VELOCITY
+	blt $t2, t_collide_when_inactive_Y_VELOCITY, apply_gravity_cap_upward_velocity
+	li $t2, t_collide_when_inactive_Y_VELOCITY
 	j apply_gravity_move_down
 	
 apply_gravity_cap_upward_velocity:
 	sub $t9, $zero, $t2
-	blt $t9, TERMINAL_Y_VELOCITY, apply_gravity_move_down
-	sub $t2, $zero, TERMINAL_Y_VELOCITY
+	blt $t9, t_collide_when_inactive_Y_VELOCITY, apply_gravity_move_down
+	sub $t2, $zero, t_collide_when_inactive_Y_VELOCITY
 	
 apply_gravity_move_down:
 	# Add y velocity to y pos
@@ -152,7 +152,7 @@ apply_gravity_check_on_ground_2:
 	sw $t3, 8($sp)
 	sw $t4, 12($sp)
 	
-	la $a0, level_0
+	la $a0, level_1
 	addi $a1, $s0, object.bounds
 	li $a2, 1
 	jal check_bottom_collision
@@ -193,7 +193,7 @@ apply_gravity_fix_y_1:
 	sw $t3, 8($sp)
 	sw $t4, 12($sp)
 	
-	la $a0, level_0
+	la $a0, level_1
 	addi $a1, $s0, object.bounds
 	li $a2, 0
 	jal check_top_collision
@@ -240,7 +240,7 @@ apply_gravity_fix_y_2:
 	sw $t3, 8($sp)
 	sw $t4, 12($sp)
 	
-	la $a0, level_0
+	la $a0, level_1
 	addi $a1, $s0, object.bounds
 	li $a2, 0
 	jal check_bottom_collision

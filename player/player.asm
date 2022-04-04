@@ -148,7 +148,7 @@ update_player_fix_x_1:
 	sw $t0, 0($sp)
 	sw $t7, 4($sp)
 	
-	la $a0, level_0
+	la $a0, level_1
 	addi $a1, $t7, player.obj.bounds
 	li $a2, 0
 	jal check_left_collision
@@ -188,7 +188,7 @@ update_player_fix_x_2:
 	sw $t0, 0($sp)
 	sw $t7, 4($sp)
 	
-	la $a0, level_0
+	la $a0, level_1
 	addi $a1, $t7, player.obj.bounds
 	li $a2, 0
 	jal check_right_collision
