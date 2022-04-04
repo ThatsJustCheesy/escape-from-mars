@@ -60,28 +60,28 @@ update_object:
 	
 	lw $t0, 4($sp)
 	
-	la $a0, level_1
+	lw $a0, current_level_layout
 	lw $a1, object.bounds.x0($t0)
 	lw $a2, object.bounds.y0($t0)
 	jal draw_level_tile
 	
 	lw $t0, 4($sp)
 	
-	la $a0, level_1
+	lw $a0, current_level_layout
 	lw $a1, object.bounds.x1($t0)
 	lw $a2, object.bounds.y0($t0)
 	jal draw_level_tile
 	
 	lw $t0, 4($sp)
 	
-	la $a0, level_1
+	lw $a0, current_level_layout
 	lw $a1, object.bounds.x0($t0)
 	lw $a2, object.bounds.y1($t0)
 	jal draw_level_tile
 	
 	lw $t0, 4($sp)
 	
-	la $a0, level_1
+	lw $a0, current_level_layout
 	lw $a1, object.bounds.x1($t0)
 	lw $a2, object.bounds.y1($t0)
 	jal draw_level_tile
@@ -110,3 +110,7 @@ update_object_no_update_fn:
 	addi $sp, $sp, 8
 	
 	jr $ra
+
+
+.include "pickup.asm"
+.include "activator.asm"

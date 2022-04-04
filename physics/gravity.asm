@@ -51,7 +51,7 @@ apply_gravity_check_on_ground_1:
 	sw $t3, 8($sp)
 	sw $t4, 12($sp)
 	
-	la $a0, level_1
+	lw $a0, current_level_layout
 	addi $a1, $s0, object.bounds
 	li $a2, 1
 	jal check_bottom_collision
@@ -103,7 +103,7 @@ apply_gravity_passed_tick_check:
 	sw $t3, 8($sp)
 	sw $t4, 12($sp)
 	
-	la $a0, level_1
+	lw $a0, current_level_layout
 	addi $a1, $s0, object.bounds
 	li $a2, 1
 	jal check_bottom_collision
@@ -152,7 +152,7 @@ apply_gravity_check_on_ground_2:
 	sw $t3, 8($sp)
 	sw $t4, 12($sp)
 	
-	la $a0, level_1
+	lw $a0, current_level_layout
 	addi $a1, $s0, object.bounds
 	li $a2, 1
 	jal check_bottom_collision
@@ -193,7 +193,7 @@ apply_gravity_fix_y_1:
 	sw $t3, 8($sp)
 	sw $t4, 12($sp)
 	
-	la $a0, level_1
+	lw $a0, current_level_layout
 	addi $a1, $s0, object.bounds
 	li $a2, 0
 	jal check_top_collision
@@ -240,7 +240,7 @@ apply_gravity_fix_y_2:
 	sw $t3, 8($sp)
 	sw $t4, 12($sp)
 	
-	la $a0, level_1
+	lw $a0, current_level_layout
 	addi $a1, $s0, object.bounds
 	li $a2, 0
 	jal check_bottom_collision

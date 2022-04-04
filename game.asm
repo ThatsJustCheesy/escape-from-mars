@@ -13,7 +13,8 @@ main:
 	jal clear
 	
 	la $a0, level_1
-	jal draw_level
+	la $a1, level_1_objects
+	jal start_level
 	
 	li $a0, 15		# x
 	li $a1, 110		# y
@@ -31,6 +32,8 @@ main_loop:
 	j main
 
 main_no_restart:
+	jal update_current_level
+	
 	lw $a0, 0($sp)
 	jal update_object
 	

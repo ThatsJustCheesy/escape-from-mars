@@ -1,5 +1,6 @@
 .include "leveltiles.asm"
 .include "levellayouts.asm"
+.include "levelstate.asm"
 
 .data
 comma:	.asciiz	","
