@@ -1,6 +1,6 @@
 .data
 
-current_level_layout:	.word	level_1
+current_level_layout:	.word	0
 current_level_objects_template:	.word	level_1_objects
 current_level_objects:	.word	0:384	# 16 * SIZEOF_object
 

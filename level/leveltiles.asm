@@ -6,6 +6,7 @@
 t_empty:	.word	t_empty_sprite, 0
 t_ground:	.word	t_ground_sprite, 1
 t_floor_pushbutton:	.word	t_floor_pushbutton_sprite, 0
+t_collide_when_active:	.word	t_collide_when_inactive_inactive_sprite, 0
 t_collide_when_inactive:	.word	t_collide_when_inactive_inactive_sprite, 1
 
 # `sprite`

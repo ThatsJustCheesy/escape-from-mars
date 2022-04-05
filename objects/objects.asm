@@ -110,7 +110,3 @@ update_object_no_update_fn:
 	addi $sp, $sp, 8
 	
 	jr $ra
-
-
-.include "pickup.asm"
-.include "activator.asm"

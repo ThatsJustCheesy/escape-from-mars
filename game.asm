@@ -4,6 +4,7 @@
 .include "level/level.asm"
 .include "physics/physics.asm"
 .include "player/player.asm"
+.include "interactives/interactives.asm"
 .include "input/input.asm"
 
 .text
@@ -16,11 +17,7 @@ main:
 	la $a1, level_1_objects
 	jal start_level
 	
-	li $a0, 15		# x
-	li $a1, 110		# y
-	jal new_realplayer
-	addi $sp, $sp, -4
-	sw $v0, 0($sp)		# realplayer*
+	jal reset_players
 	
 main_loop:
 	jal poll_keyboard
@@ -34,8 +31,7 @@ main_loop:
 main_no_restart:
 	jal update_current_level
 	
-	lw $a0, 0($sp)
-	jal update_object
+	jal update_players
 	
 	li $v0, SLEEP
 	li $a0, 20

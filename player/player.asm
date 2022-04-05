@@ -26,6 +26,8 @@
 
 .include "realplayer.asm"
 .include "scriptedplayer.asm"
+.include "playerstate.asm"
+.include "playercollision.asm"
 
 .data
 player_x_velocity:	.word 0
