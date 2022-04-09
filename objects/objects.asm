@@ -41,8 +41,61 @@ init_object:
 
 
 ## void update_object(object*)
-## Run updates for an object.
+## Run updates for an object without redrawing it.
 update_object:
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+	
+	# Call update function if not null
+	lw $t1, object.update($a0)
+	beqz $t1, update_object_no_update_fn
+	jalr $t1		# Call update function
+	
+update_object_no_update_fn:
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	
+	jr $ra
+
+
+## void update_and_redraw_object(object*)
+## Run updates for an object, redrawing it.
+update_and_redraw_object:
+	addi $sp, $sp, -8
+	sw $ra, 0($sp)
+	sw $a0, 4($sp)
+	
+	jal erase_object_sprite
+	
+	lw $t0, 4($sp)
+	
+	# Call update function if not null
+	lw $t0, 4($sp)
+	lw $t1, object.update($t0)
+	beqz $t1, update_and_redraw_object_no_update_fn
+	move $a0, $t0		# Set self parameter
+	jalr $t1		# Call update function
+	
+update_and_redraw_object_no_update_fn:
+	lw $t0, 4($sp)
+	
+	# Draw sprite
+	lw $a0, object.x($t0)
+	lw $a1, object.y($t0)
+	lw $a2, object.sprite($t0)
+	li $a3, 0		# 0 = draw
+	jal draw_sprite
+	
+	lw $ra, 0($sp)
+	addi $sp, $sp, 8
+	
+	jr $ra
+
+
+## void erase_object_sprite(object*)
+## Erase the given object's sprite from the screen,
+## and redraw the surrounding level tiles to be safe.
+erase_object_sprite:
 	addi $sp, $sp, -8
 	sw $ra, 0($sp)
 	sw $a0, 4($sp)
@@ -85,26 +138,6 @@ update_object:
 	lw $a1, object.bounds.x1($t0)
 	lw $a2, object.bounds.y1($t0)
 	jal draw_level_tile
-	
-	lw $t0, 4($sp)
-	
-	# Call update function if not null
-	lw $t0, 4($sp)
-	lw $t1, object.update($t0)
-	beqz $t1, update_object_no_update_fn
-	move $a0, $t0		# Set self parameter
-	jalr $t1		# Call update function
-	
-update_object_no_update_fn:
-	
-	lw $t0, 4($sp)
-	
-	# Draw sprite
-	lw $a0, object.x($t0)
-	lw $a1, object.y($t0)
-	lw $a2, object.sprite($t0)
-	li $a3, 0		# 0 = draw
-	jal draw_sprite
 	
 	lw $ra, 0($sp)
 	addi $sp, $sp, 8

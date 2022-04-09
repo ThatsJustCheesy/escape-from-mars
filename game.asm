@@ -29,6 +29,7 @@ main_loop:
 	j main
 
 main_no_restart:
+	move $a0, $zero
 	jal update_current_level
 	
 	jal update_players

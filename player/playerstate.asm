@@ -56,7 +56,7 @@ update_players_loop:
 	beqz $s0, update_players_end
 	
 	lw $a0, 0($s1)
-	jal update_object
+	jal update_and_redraw_object
 	
 	addi $s1, $s1, 4
 	

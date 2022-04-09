@@ -109,18 +109,21 @@ start_level_copy_objects_end:
 	lw $ra, 0($sp)
 	addi $sp, $sp, 4
 	
+	li $a0, 1	# Force redraw of all loaded objects
 	j update_current_level
 	
 
-## void update_current_level(void)
+## void update_current_level(bool redraw_all_objects)
 ## Trigger updates for all loaded objects, and redraw the current level layout.
+## If `redraw_all_objects` is set, also force redrawing all loaded objects.
 update_current_level:
 	addi $sp, $sp, -4
 	sw $ra, 0($sp)
 
-	addi $sp, $sp, -8
+	addi $sp, $sp, -12
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
+	sw $s2, 8($sp)
 	
 	# s0 = counter
 	la $t0, current_level_objects
@@ -130,21 +133,35 @@ update_current_level:
 	la $s1, current_level_objects
 	addi $s1, $s1, 4
 	
+	# s2 = redraw_all_objects?
+	move $s2, $a0
+	
 update_current_level_update_objects_loop:
 	beqz $s0, update_current_level_update_objects_end
 	
+	beqz $s2, update_current_level_do_not_redraw
+	
+update_current_level_redraw:
+	move $a0, $s1
+	jal update_and_redraw_object
+	
+	j update_current_level_continue_loop
+	
+update_current_level_do_not_redraw:
 	move $a0, $s1
 	jal update_object
 	
+update_current_level_continue_loop:
 	addi $s1, $s1, SIZEOF_object
 	
 	addi $s0, $s0, -1
 	j update_current_level_update_objects_loop
 	
 update_current_level_update_objects_end:
+	lw $s2, 8($sp)
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
-	addi $sp, $sp, 8
+	addi $sp, $sp, 12
 	
 	lw $ra, 0($sp)
 	addi $sp, $sp, 4
@@ -199,9 +216,20 @@ nop_update:
 ## Remove the given object from the list of currently loaded objects.
 ## (Actually just "disables" the object for now, for simplicity.)
 unload_object:
+	addi $sp, $sp, -8
+	sw $ra, 0($sp)
+	sw $a0, 4($sp)
+	
+	jal erase_object_sprite
+	
+	lw $a0, 4($sp)
+	
 	la $t3, empty_sprite
 	sw $t3, object.sprite($a0)
 	la $t3, nop_update
 	sw $t3, object.update($a0)
-
+	
+	lw $ra, 0($sp)
+	addi $sp, $sp, 8
+	
 	jr $ra
