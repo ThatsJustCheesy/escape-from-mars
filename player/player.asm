@@ -17,7 +17,7 @@
 .eqv player.physics 24
 .eqv player.physics.y_velocity 24
 .eqv player.physics.y_acceleration 28
-.eqv player.physics.tick_counter 32
+.eqv player.physics.x_velocity 32
 .eqv player.physics.on_ground 36
 
 .eqv PLAYER_X_SPEED 4
@@ -28,9 +28,6 @@
 .include "scriptedplayer.asm"
 .include "playerstate.asm"
 .include "playercollision.asm"
-
-.data
-player_x_velocity:	.word 0
 
 .text
 
@@ -43,7 +40,7 @@ update_player:
 	move $t7, $a0
 	lw $t0, player.obj.x($t7)
 	lw $t1, player.obj.y($t7)
-	lw $t2, player_x_velocity
+	lw $t2, player.physics.x_velocity($t7)
 	lw $t3, player.physics.y_velocity($t7)
 	lw $t4, player.physics.y_acceleration($t7)
 	
@@ -59,7 +56,7 @@ update_player_on_ground:
 	li $t9, 1
 	mul $t9, $t9, $v0	# multiply by constant
 	add $t2, $t2, $t9	# apply friction
-	sw $t2, player_x_velocity
+	sw $t2, player.physics.x_velocity($t7)
 	
 	j update_player_check_x_input
 	
@@ -80,25 +77,25 @@ update_player_check_x_input:
 update_player_go_left:
 	li $t2, PLAYER_X_SPEED
 	sub $t2, $zero, $t2
-	sw $t2, player_x_velocity
+	sw $t2, player.physics.x_velocity($t7)
 	j update_player_check_y_input
 	
 update_player_go_left_slow:
 	li $t2, PLAYER_X_SPEED
 	srl $t2, $t2, 1
 	sub $t2, $zero, $t2
-	sw $t2, player_x_velocity
+	sw $t2, player.physics.x_velocity($t7)
 	j update_player_check_y_input
 	
 update_player_go_right:
 	li $t2, PLAYER_X_SPEED
-	sw $t2, player_x_velocity
+	sw $t2, player.physics.x_velocity($t7)
 	j update_player_check_y_input
 	
 update_player_go_right_slow:
 	li $t2, PLAYER_X_SPEED
 	srl $t2, $t2, 1
-	sw $t2, player_x_velocity
+	sw $t2, player.physics.x_velocity($t7)
 	j update_player_check_y_input
 
 update_player_go_nowhere_x:
@@ -173,7 +170,7 @@ update_player_fix_x_1:
 	sw $t1, player.obj.bounds.x1($t7)
 	
 	li $t1, 2
-	sw $t1, player_x_velocity
+	sw $t1, player.physics.x_velocity($t7)
 	
 	# ...repeatedly
 	j update_player_fix_x_1
@@ -213,7 +210,7 @@ update_player_fix_x_2:
 	sw $t1, player.obj.bounds.x1($t7)
 	
 	li $t1, -2
-	sw $t1, player_x_velocity
+	sw $t1, player.physics.x_velocity($t7)
 	
 	# ...repeatedly
 	j update_player_fix_x_1

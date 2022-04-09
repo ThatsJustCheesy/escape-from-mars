@@ -1,7 +1,7 @@
 ## typedef struct physics_state {
 ## 	int y_velocity;
 ##	int y_acceleration;
-##	int tick_counter;
+##	int x_velocity;
 ## 	int on_ground;
 ## } physics_state;
 
@@ -9,10 +9,10 @@
 
 .eqv physics_state.y_velocity 0
 .eqv physics_state.y_acceleration 4
-.eqv physics_state.tick_counter 8
+.eqv physics_state.x_velocity 8
 .eqv physics_state.on_ground 12
 
-.eqv t_collide_when_inactive_Y_VELOCITY 6
+.eqv TERMINAL_Y_VELOCITY 6
 
 .text
 
@@ -68,24 +68,13 @@ apply_gravity_check_on_ground_1:
 	# on_ground = 0
 	li $t4, 0
 	
-	j apply_gravity_tick_check
+	j apply_gravity_continue_1
 	
 apply_gravity_on_ground_1:
 	# on_ground = 1
 	li $t4, 1
-
-apply_gravity_tick_check:
-	# Increment phycics.tick
-	# If < GRAVITY_TICK_RATE, bail
-	# If = GRAVITY_TICK_RATE, reset to 0 and continue
-	lw $t0, physics_state.tick_counter($s1)
-	addi $t0, $t0, 1
-	sw $t0, physics_state.tick_counter($s1)
-	blt $t0, GRAVITY_TICK_RATE, apply_gravity_return
-	move $t0, $zero
-	sw $t0, physics_state.tick_counter($s1)
 	
-apply_gravity_passed_tick_check:
+apply_gravity_continue_1:
 	sw $t1, object.y($s0)
 	sw $t2, physics_state.y_velocity($s1)
 	sw $t3, physics_state.y_acceleration($s1)
@@ -121,14 +110,14 @@ apply_gravity_passed_tick_check:
 	add $t2, $t2, $t3
 	
 apply_gravity_cap_downward_velocity:
-	blt $t2, t_collide_when_inactive_Y_VELOCITY, apply_gravity_cap_upward_velocity
-	li $t2, t_collide_when_inactive_Y_VELOCITY
+	blt $t2, TERMINAL_Y_VELOCITY, apply_gravity_cap_upward_velocity
+	li $t2, TERMINAL_Y_VELOCITY
 	j apply_gravity_move_down
 	
 apply_gravity_cap_upward_velocity:
 	sub $t9, $zero, $t2
-	blt $t9, t_collide_when_inactive_Y_VELOCITY, apply_gravity_move_down
-	sub $t2, $zero, t_collide_when_inactive_Y_VELOCITY
+	blt $t9, TERMINAL_Y_VELOCITY, apply_gravity_move_down
+	sub $t2, $zero, TERMINAL_Y_VELOCITY
 	
 apply_gravity_move_down:
 	# Add y velocity to y pos
@@ -186,6 +175,8 @@ apply_gravity_fix_y_1:
 	add $t1, $t1, $t9
 	sw $t1, object.bounds.y1($s0)
 	sub $t1, $t1, $t9
+	
+	bgt $t1, DISPLAY_HEIGHT, apply_gravity_fix_y_2
 	
 	addi $sp, $sp, -16
 	sw $t1, 0($sp)

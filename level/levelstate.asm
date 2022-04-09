@@ -2,9 +2,10 @@
 
 current_level_layout:	.word	0
 current_level_objects_template:	.word	level_1_objects
-current_level_objects:	.word	0:384	# 16 * SIZEOF_object
+current_level_objects:	.word	0:97	# 1 for count, plus 16 * (SIZEOF_object / 4)
 
 .text
+
 
 ## void start_level(level_layout* layout, level_objects* objects)
 ## (Re)start the level described by `layout` and `objects`.
@@ -76,10 +77,11 @@ update_current_level:
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
 	
+	# s0 = counter
 	la $t0, current_level_objects
 	lw $s0, 0($t0)
 	
-	# Cursor into object list
+	# s1 = cursor into object list
 	la $s1, current_level_objects
 	addi $s1, $s1, 4
 	
@@ -102,4 +104,59 @@ update_current_level_update_objects_end:
 	lw $ra, 0($sp)
 	addi $sp, $sp, 4
 	
+	jr $ra
+
+
+## void load_object(object*)
+## Copy the given object to the list of currently loaded objects.
+load_object:
+	# Increment count
+	lw $t0, current_level_objects
+	addi $t0, $t0, 1
+	sw $t0, current_level_objects
+	
+	# Compute next empty slot address
+	la $t1, current_level_objects
+	addi $t1, $t1, 4	# skip count
+	mul $t0, $t0, SIZEOF_object
+	add $t1, $t1, $t0
+	
+	# Copy object to empty slot
+	lw $t3, object.bounds.x0($a0)
+	sw $t3, object.bounds.x0($t1)
+	lw $t3, object.bounds.y0($a0)
+	sw $t3, object.bounds.y0($t1)
+	lw $t3, object.bounds.x1($a0)
+	sw $t3, object.bounds.x1($t1)
+	lw $t3, object.bounds.y1($a0)
+	sw $t3, object.bounds.y1($t1)
+	lw $t3, object.sprite($a0)
+	sw $t3, object.sprite($t1)
+	lw $t3, object.update($a0)
+	sw $t3, object.update($t1)
+	
+	jr $ra
+
+
+.data
+
+empty_sprite:	.word	0, 0
+
+.text
+
+## void nop_update(object* self)
+## An update function that does nothing.
+nop_update:
+	jr $ra
+
+
+## void unload_object(object*)
+## Remove the given object from the list of currently loaded objects.
+## (Actually just "disables" the object for now, for simplicity.)
+unload_object:
+	la $t3, empty_sprite
+	sw $t3, object.sprite($a0)
+	la $t3, nop_update
+	sw $t3, object.update($a0)
+
 	jr $ra

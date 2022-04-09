@@ -3,7 +3,7 @@
 
 .data
 
-current_players:	.word	0:64	## (player*)[16]
+current_players:	.word	0:17	## 1 for count, plus (player*)[16]
 
 .eqv current_players.count 0
 .eqv current_players.players 4
@@ -70,5 +70,26 @@ update_players_end:
 	
 	lw $ra, 0($sp)
 	addi $sp, $sp, 4
+	
+	jr $ra
+
+
+## void load_player(player*)
+## Copy the given player to the current list of players.
+load_player:
+	# Increment count
+	lw $t0, current_players
+	addi $t0, $t0, 1
+	sw $t0, current_players
+
+	# Compute next empty slot address
+	la $t1, current_players
+	addi $t1, $t1, current_players.players
+	addi $t0, $t0, -1
+	sll $t0, $t0, 2
+	add $t1, $t1, $t0
+	
+	# Put player pointer in empty slot
+	sw $a0, ($t1)
 	
 	jr $ra

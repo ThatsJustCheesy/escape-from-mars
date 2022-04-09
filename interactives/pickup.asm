@@ -10,8 +10,11 @@ sprite_cloner:	.word	8, 8, 0x00010101, 0x00010000, 0xff2496d2, 0xff2796d2, 0xff2
 update_ender:
 	addi $sp, $sp, -4
 	sw $ra, 0($sp)
+
+	addi $a0, $a0, object.bounds
+	jal check_player_collision
 	
-	# TODO: logic
+	# TODO: advance level
 	
 	lw $ra, 0($sp)
 	addi $sp, $sp, 4
@@ -24,10 +27,29 @@ update_ender:
 update_cloner:
 	addi $sp, $sp, -4
 	sw $ra, 0($sp)
-
-	# TODO: logic
-
+	
+	addi $sp, $sp, -4
+	sw $a0, 0($sp)
+	
+	addi $a0, $a0, object.bounds
+	jal check_player_collision
+	
+	beqz $v0, update_cloner_end
+	
+	li $a0, REALPLAYER_INITIAL_X
+	li $a1, REALPLAYER_INITIAL_Y
+	jal new_realplayer
+	
+	move $a0, $v0
+	jal load_player
+	
+	lw $a0, 0($sp)
+	jal unload_object
+	
+update_cloner_end:
+	addi $sp, $sp, 4	# pop self pointer
+	
 	lw $ra, 0($sp)
 	addi $sp, $sp, 4
-
+	
 	jr $ra

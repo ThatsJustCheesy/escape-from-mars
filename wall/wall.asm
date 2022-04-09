@@ -52,7 +52,7 @@ new_wall:
 	sw $zero, physics_state.y_velocity($t1)
 	li $t5, PLAYER_Y_ACCELERATION_DUE_TO_GRAVITY
 	sw $t5, physics_state.y_acceleration($t1)
-	sw $zero, physics_state.tick_counter($t1)
+	sw $zero, physics_state.x_velocity($t1)
 	li $t5, 1
 	sw $t5, physics_state.on_ground($t1)
 	

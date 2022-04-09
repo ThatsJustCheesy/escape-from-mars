@@ -1,0 +1,4 @@
+Piskel sprite data regex replace
+
+Find: 0x([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})
+Replace: 0x$1$4$3$2
