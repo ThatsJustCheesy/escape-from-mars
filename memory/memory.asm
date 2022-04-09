@@ -1,7 +1,7 @@
 .data
 
 .align 2
-malloc_zone:	.space	0x16000
+malloc_zone:	.space	0x20000
 malloc_index:	.word	0
 
 .text

@@ -14,8 +14,8 @@
 main:
 	jal clear
 	
-	la $a0, level_3
-	la $a1, level_3_objects
+	la $a0, level_1
+	la $a1, level_1_objects
 	jal start_level
 	
 	jal reset_players
