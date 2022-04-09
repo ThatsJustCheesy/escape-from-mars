@@ -1,3 +1,26 @@
+# Escape from MARS
+
+## A game of time-twisting puzzles
+
+You are a time-travelling alien stuck deep within the caves of planet MARS. It feels like it's been forever since you last saw the sun. But using your powers to morph time and space, you might just escape in one piece…
+
+## Instructions
+
+Reach the purple wormhole in each level.
+
+### Controls
+
+- A: move left
+- D: move right
+- W: jump up
+- Q: jump left / move left slightly while in the air
+- E: jump right / move right slightly while in the air
+- R: restart level
+- P: restart game
+
+## Preamble
+
+```
 #####################################################################
 #
 # CSCB58 Winter 2022 Assembly Final Project
@@ -36,64 +59,4 @@
 #   (If needed, please use another text editor to view the rest of the code.)
 #
 # #####################################################################
-
-.include "util/util.asm"
-.include "graphics/graphics.asm"
-.include "memory/memory.asm"
-.include "objects/objects.asm"
-.include "level/level.asm"
-.include "physics/physics.asm"
-.include "player/player.asm"
-.include "interactives/interactives.asm"
-.include "input/input.asm"
-
-.text
-
-.globl main
-main:
-	jal clear
-	
-	la $a0, level_1
-	la $a1, level_1_objects
-	jal start_level
-	
-	jal reset_players
-	
-main_loop:
-	jal poll_keyboard
-
-	lb $t0, keyboard_p_down
-	beqz $t0, main_no_restart
-	
-	addi $sp, $sp, 4
-	j main
-
-main_no_restart:
-	lb $t0, keyboard_r_down
-	beqz $t0, main_no_restart_level
-	
-	jal reset_players
-	jal clear
-	jal restart_current_level
-	
-main_no_restart_level:
-	jal record_input
-	
-	move $a0, $zero
-	jal update_current_level
-	
-	jal update_players
-	
-	lw $t0, current_level_layout
-	la $t1, win_screen
-	beq $t0, $t1, main_exit
-	
-	li $v0, SLEEP
-	li $a0, 20
-	syscall
-	
-	j main_loop
-	
-main_exit:
-	li $v0, EXIT
-	syscall 
+```
