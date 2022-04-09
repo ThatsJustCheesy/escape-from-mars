@@ -132,7 +132,7 @@ start_level_copy_objects_loop:
 start_level_copy_objects_end:
 	sw $zero, current_frame_index
 	
-	li $a0, 0x8000	# Space for 4096 `input_script_step`s
+	li $a0, 0x4000	# Space for 2048 `input_script_step`s
 	jal malloc
 	sw $v0, current_input_script
 	sw $v0, current_input_script_cursor
