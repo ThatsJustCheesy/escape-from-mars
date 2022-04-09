@@ -14,8 +14,11 @@ update_ender:
 	addi $a0, $a0, object.bounds
 	jal check_player_collision
 	
-	# TODO: advance level
+	beqz $v0, update_ender_end
 	
+	jal advance_level
+	
+update_ender_end:
 	lw $ra, 0($sp)
 	addi $sp, $sp, 4
 	

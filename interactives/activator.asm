@@ -28,7 +28,7 @@ update_activator_no_collision:
 	sw $zero, level_layout_tile.collision($t8)
 	sw $t1, level_layout_tile.collision($t9)
 	
-	la $t1, t_collide_when_inactive_inactive_sprite
+	la $t1, t_collide_when_active_inactive_sprite
 	sw $t1, level_layout_tile.graphics($t8)
 	la $t1, t_collide_when_inactive_inactive_sprite
 	sw $t1, level_layout_tile.graphics($t9)
@@ -44,7 +44,7 @@ update_activator_collision:
 	sw $t1, level_layout_tile.collision($t8)
 	sw $zero, level_layout_tile.collision($t9)
 	
-	la $t1, t_collide_when_inactive_active_sprite
+	la $t1, t_collide_when_active_active_sprite
 	sw $t1, level_layout_tile.graphics($t8)
 	la $t1, t_collide_when_inactive_active_sprite
 	sw $t1, level_layout_tile.graphics($t9)

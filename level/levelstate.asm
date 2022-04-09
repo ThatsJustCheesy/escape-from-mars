@@ -6,6 +6,51 @@ current_level_objects:	.word	0:97	# 1 for count, plus 16 * (SIZEOF_object / 4)
 
 .text
 
+## void advance_level(void)
+## Advance to the next level.
+advance_level:
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+	
+	lw $t0, current_level_layout
+	beq $t0, 0, advance_level_1
+	
+	la $t1, level_1
+	beq $t0, $t1, advance_level_2
+	
+	j advance_level_end
+	
+advance_level_1:
+	la $a0, level_1
+	la $a1, level_1_objects
+	j advance_level_load
+	
+advance_level_2:
+	la $a0, level_2
+	la $a1, level_2_objects
+	j advance_level_load
+	
+advance_level_load:
+	addi $sp, $sp, -8
+	sw $a0, 0($sp)
+	sw $a1, 4($sp)
+	
+	jal clear
+
+	lw $a1, 4($sp)
+	lw $a0, 0($sp)
+	addi $sp, $sp, 8
+	
+	jal start_level
+	
+	jal reset_players
+	
+advance_level_end:
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	
+	jr $ra
+
 
 ## void start_level(level_layout* layout, level_objects* objects)
 ## (Re)start the level described by `layout` and `objects`.
