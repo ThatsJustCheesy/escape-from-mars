@@ -18,6 +18,12 @@ advance_level:
 	la $t1, level_1
 	beq $t0, $t1, advance_level_2
 	
+	la $t1, level_2
+	beq $t0, $t1, advance_level_3
+	
+	la $t1, level_3
+	beq $t0, $t1, advance_level_win
+	
 	j advance_level_end
 	
 advance_level_1:
@@ -28,6 +34,16 @@ advance_level_1:
 advance_level_2:
 	la $a0, level_2
 	la $a1, level_2_objects
+	j advance_level_load
+	
+advance_level_3:
+	la $a0, level_3
+	la $a1, level_3_objects
+	j advance_level_load
+	
+advance_level_win:
+	la $a0, win_screen
+	la $a1, win_screen_objects
 	j advance_level_load
 	
 advance_level_load:
@@ -50,6 +66,14 @@ advance_level_end:
 	addi $sp, $sp, 4
 	
 	jr $ra
+
+
+## void restart_current_level(void)
+## Restart the current level.
+restart_current_level:
+	lw $a0, current_level_layout
+	lw $a1, current_level_objects_template
+	j start_level
 
 
 ## void start_level(level_layout* layout, level_objects* objects)
@@ -106,6 +130,13 @@ start_level_copy_objects_loop:
 	j start_level_copy_objects_loop
 	
 start_level_copy_objects_end:
+	sw $zero, current_frame_index
+	
+	li $a0, 0x8000	# Space for 4096 `input_script_step`s
+	jal malloc
+	sw $v0, current_input_script
+	sw $v0, current_input_script_cursor
+	
 	lw $ra, 0($sp)
 	addi $sp, $sp, 4
 	
@@ -162,6 +193,10 @@ update_current_level_update_objects_end:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	addi $sp, $sp, 12
+	
+	lw $t0, current_frame_index
+	addi $t0, $t0, 1
+	sw $t0, current_frame_index
 	
 	lw $ra, 0($sp)
 	addi $sp, $sp, 4

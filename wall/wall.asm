@@ -27,9 +27,8 @@ new_wall:
 	move $t0, $a0
 	move $t1, $a1
 	
-	li $v0, MALLOC
 	li $a0, SIZEOF_realplayer
-	syscall
+	jal malloc
 	
 	addi $sp, $sp, -8
 	sw $ra, 0($sp)
@@ -54,7 +53,8 @@ new_wall:
 	sw $t5, physics_state.y_acceleration($t1)
 	sw $zero, physics_state.x_velocity($t1)
 	li $t5, 1
-	sw $t5, physics_state.on_ground($t1)
+	sh $t5, physics_state.on_ground($t1)
+	sh $zero, physics_state.inputs($t1)
 	
 	move $v0, $t0		# return the object
 	

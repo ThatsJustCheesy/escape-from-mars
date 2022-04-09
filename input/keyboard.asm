@@ -10,7 +10,7 @@ keyboard_p_down:	.byte	0
 keyboard_q_down:	.byte	0
 keyboard_s_down:	.byte	0
 keyboard_w_down:	.byte	0
-keyboard_reserved:	.byte	0
+keyboard_r_down:	.byte	0
 
 .text
 
@@ -33,6 +33,7 @@ poll_keyboard_loop:
 	beq $t0, 0x65, poll_keyboard_found_e
 	beq $t0, 0x70, poll_keyboard_found_p
 	beq $t0, 0x71, poll_keyboard_found_q
+	beq $t0, 0x72, poll_keyboard_found_r
 	beq $t0, 0x73, poll_keyboard_found_s
 	beq $t0, 0x77, poll_keyboard_found_w
 	
@@ -52,6 +53,9 @@ poll_keyboard_found_p:
 	j poll_keyboard_loop
 poll_keyboard_found_q:
 	sb $t1, keyboard_q_down
+	j poll_keyboard_loop
+poll_keyboard_found_r:
+	sb $t1, keyboard_r_down
 	j poll_keyboard_loop
 poll_keyboard_found_s:
 	sb $t1, keyboard_s_down

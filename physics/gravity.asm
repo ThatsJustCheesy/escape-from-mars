@@ -2,7 +2,8 @@
 ## 	int y_velocity;
 ##	int y_acceleration;
 ##	int x_velocity;
-## 	int on_ground;
+## 	short on_ground;
+## 	short inputs;	// 1 = a, 2 = q, 4 = d, 8 = e, 16 = w
 ## } physics_state;
 
 .eqv SIZEOF_physics_state 16
@@ -11,6 +12,7 @@
 .eqv physics_state.y_acceleration 4
 .eqv physics_state.x_velocity 8
 .eqv physics_state.on_ground 12
+.eqv physics_state.inputs 14
 
 .eqv TERMINAL_Y_VELOCITY 6
 
@@ -31,13 +33,13 @@ apply_gravity:
 	lw $t1, object.y($s0)
 	lw $t2, physics_state.y_velocity($s1)
 	lw $t3, physics_state.y_acceleration($s1)
-	lw $t4, physics_state.on_ground($s1)
+	lh $t4, physics_state.on_ground($s1)
 	
 apply_gravity_check_on_ground_1:
 	sw $t1, object.y($s0)
 	sw $t2, physics_state.y_velocity($s1)
 	sw $t3, physics_state.y_acceleration($s1)
-	sw $t4, physics_state.on_ground($s1)
+	sh $t4, physics_state.on_ground($s1)
 	
 	lw $t9, object.sprite($s0)
 	lw $t9, sprite.height($t9)
@@ -78,7 +80,7 @@ apply_gravity_continue_1:
 	sw $t1, object.y($s0)
 	sw $t2, physics_state.y_velocity($s1)
 	sw $t3, physics_state.y_acceleration($s1)
-	sw $t4, physics_state.on_ground($s1)
+	sh $t4, physics_state.on_ground($s1)
 	
 	lw $t9, object.sprite($s0)
 	lw $t9, sprite.height($t9)
@@ -127,7 +129,7 @@ apply_gravity_check_on_ground_2:
 	sw $t1, object.y($s0)
 	sw $t2, physics_state.y_velocity($s1)
 	sw $t3, physics_state.y_acceleration($s1)
-	sw $t4, physics_state.on_ground($s1)
+	sh $t4, physics_state.on_ground($s1)
 	
 	lw $t9, object.sprite($s0)
 	lw $t9, sprite.height($t9)
@@ -168,7 +170,7 @@ apply_gravity_fix_y_1:
 	sw $t1, object.y($s0)
 	sw $t2, physics_state.y_velocity($s1)
 	sw $t3, physics_state.y_acceleration($s1)
-	sw $t4, physics_state.on_ground($s1)
+	sh $t4, physics_state.on_ground($s1)
 	
 	lw $t9, object.sprite($s0)
 	lw $t9, sprite.height($t9)
@@ -217,7 +219,7 @@ apply_gravity_fix_y_2:
 	sw $t1, object.y($s0)
 	sw $t2, physics_state.y_velocity($s1)
 	sw $t3, physics_state.y_acceleration($s1)
-	sw $t4, physics_state.on_ground($s1)
+	sh $t4, physics_state.on_ground($s1)
 	
 	lw $t9, object.sprite($s0)
 	lw $t9, sprite.height($t9)
@@ -265,7 +267,7 @@ apply_gravity_return:
 	sw $t1, object.y($s0)
 	sw $t2, physics_state.y_velocity($s1)
 	sw $t3, physics_state.y_acceleration($s1)
-	sw $t4, physics_state.on_ground($s1)
+	sh $t4, physics_state.on_ground($s1)
 	
 	lw $t9, object.sprite($s0)
 	lw $t9, sprite.height($t9)

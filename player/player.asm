@@ -19,11 +19,13 @@
 .eqv player.physics.y_acceleration 28
 .eqv player.physics.x_velocity 32
 .eqv player.physics.on_ground 36
+.eqv player.physics.inputs 38
 
 .eqv PLAYER_X_SPEED 4
 .eqv PLAYER_JUMP_Y_SPEED 6
 .eqv PLAYER_Y_ACCELERATION_DUE_TO_GRAVITY 1
 
+.include "inputscript.asm"
 .include "realplayer.asm"
 .include "scriptedplayer.asm"
 .include "playerstate.asm"
@@ -44,7 +46,7 @@ update_player:
 	lw $t3, player.physics.y_velocity($t7)
 	lw $t4, player.physics.y_acceleration($t7)
 	
-	lw $t5, player.physics.on_ground($t7)
+	lh $t5, player.physics.on_ground($t7)
 	beqz $t5, update_player_not_on_ground
 
 update_player_on_ground:
@@ -63,13 +65,14 @@ update_player_on_ground:
 update_player_not_on_ground:
 	
 update_player_check_x_input:
-	lb $t6, keyboard_a_down
+	lh $t9, player.physics.inputs($t7)
+	andi $t6, $t9, 0x1	# a
 	bnez $t6, update_player_go_left
-	lb $t6, keyboard_q_down
+	andi $t6, $t9, 0x2	# q
 	bnez $t6, update_player_go_left_slow
-	lb $t6, keyboard_d_down
+	andi $t6, $t9, 0x4	# d
 	bnez $t6, update_player_go_right
-	lb $t6, keyboard_e_down
+	andi $t6, $t9, 0x8	# e
 	bnez $t6, update_player_go_right_slow
 	
 	j update_player_go_nowhere_x
@@ -101,11 +104,12 @@ update_player_go_right_slow:
 update_player_go_nowhere_x:
 	
 update_player_check_y_input:
-	lb $t6, keyboard_w_down
+	lh $t9, player.physics.inputs($t7)
+	andi $t6, $t9, 0x10	# w
 	bnez $t6, update_player_jump
-	lb $t6, keyboard_q_down
+	andi $t6, $t9, 0x2	# q
 	bnez $t6, update_player_jump
-	lb $t6, keyboard_e_down
+	andi $t6, $t9, 0x8	# e
 	bnez $t6, update_player_jump
 	
 	j update_player_after_input_check
