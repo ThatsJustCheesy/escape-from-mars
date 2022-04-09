@@ -48,10 +48,11 @@ Reach the purple wormhole in each level.
 # 5. Player clones
 #
 # Link to video demonstration for final submission:
-# - (insert YouTube / MyMedia / other URL here). Make sure we can view it!
+# - https://youtu.be/Mggqq0vZV8Y
 #
 # Are you OK with us sharing the video with people outside course staff?
 # - yes, and please share this project github link as well!
+#   https://github.com/ThatsJustCheesy/escape-from-mars
 #
 # Any additional information that the TA needs to know:
 # - I split my code across multiple files using the ".include" directive.
